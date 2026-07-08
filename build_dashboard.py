@@ -46,6 +46,7 @@ COLUMN_MAP = {
 }
 
 STATUS_SYMBOLS = {
+    "√": {"label": "Complete", "key": "complete"},
     "\u2713": {"label": "Complete", "key": "complete"},      # ✓
     "\u2666": {"label": "In Progress", "key": "in_progress"},  # ♦
     "\u25cf": {"label": "Not Started", "key": "not_started"},  # ●
