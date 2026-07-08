@@ -31,18 +31,18 @@ TEMPLATE_HTML = Path("template.html")
 # Canonical column names we expect in the sheet (order matters for display).
 # Keys are normalized (lowercased, stripped) source header -> our clean name.
 COLUMN_MAP = {
-    "Component": "Component",
-    "Module": "Module",
-    "Submodule": "Sub Module",
-    "Element": "Element",
-    "Sub-Element": "Sub element",
-    "User Story": "User Story",
-    "DB": "DB",
-    "API": "API",
-    "UI": "UI",
-    "DMS": "DMS",
-    "Latest Release": "Latest Release",
-    "Past Releases": "Past Releases",  
+    "component": "Component",
+    "module": "Module",
+    "submodule": "Sub Module",
+    "element": "Element",
+    "sub-element": "Sub element",
+    "user story": "User Story",
+    "db": "DB",
+    "api": "API",
+    "ui": "UI",
+    "dms": "DMS",
+    "latest release": "Latest Release",
+    "past releases": "Past Releases",  
     # "past release": "Past Release",
 }
 
