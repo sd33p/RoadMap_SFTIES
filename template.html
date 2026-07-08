@@ -404,7 +404,7 @@ function renderTable(){
         <td>${pill(r.API_status, r.API)}</td>
         <td>${pill(r.UI_status, r.UI)}</td>
         <td class="release-cell">${r["Latest Release"] || "—"}</td>
-        <td class="past-release">${r["Past Release"] || "—"}</td>
+        <td class="past-release">${r["Past Releases"] || "—"}</td>
       </tr>
     `).join("");
   }
