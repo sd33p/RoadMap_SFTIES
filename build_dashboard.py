@@ -88,7 +88,7 @@ def build_records(df: pd.DataFrame) -> list[dict]:
     for _, row in df.iterrows():
         rec = {col: row[col] for col in HIERARCHY_COLUMNS}
         rec["Latest Release"] = row["Latest Release"]
-        rec["Past Release"] = row["Past Release"]
+        rec["Past Releases"] = row["Past Releases"]
         for col in STATUS_COLUMNS:
             symbol = row[col]
             rec[col] = symbol
