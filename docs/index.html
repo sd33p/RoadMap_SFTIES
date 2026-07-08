@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DW-SFTIES · Release Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F7F5;
+    --panel:#FFFFFF;
+    --ink:#16211D;
+    --ink-soft:#4B564F;
+    --line:#DCE2DD;
+    --brand:#0B6E5C;
+    --brand-soft:#E4F0EC;
+    --complete:#2F8F5B;
+    --complete-soft:#E4F3EA;
+    --progress:#D8952E;
+    --progress-soft:#FBF0DE;
+    --notstarted:#8B968F;
+    --notstarted-soft:#EDEFEC;
+    --na:#C7CDC9;
+    --na-soft:#F3F4F2;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(22,33,29,0.06), 0 4px 16px rgba(22,33,29,0.04);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 24px 64px; }
+
+  /* Header */
+  header.top{
+    background:var(--ink);
+    color:#EFF3F0;
+    padding:28px 0 26px;
+    margin-bottom:28px;
+  }
+  header.top .wrap{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#8FD9C4;
+    margin:0 0 8px;
+  }
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:28px;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .meta-right{ text-align:right; font-size:12.5px; color:#B7C2BC; }
+  .meta-right .mono{ color:#DCE9E4; }
+
+  /* Readiness signature block */
+  .readiness{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    box-shadow:var(--shadow);
+    margin-bottom:20px;
+  }
+  .readiness h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .readiness .sub{ font-size:12.5px; color:var(--ink-soft); margin:0 0 18px; }
+  .layer-row{ display:grid; grid-template-columns:74px 1fr 64px; align-items:center; gap:14px; margin-bottom:12px; }
+  .layer-row:last-child{ margin-bottom:0; }
+  .layer-label{ font-family:'IBM Plex Mono', monospace; font-size:12px; font-weight:600; color:var(--ink-soft); }
+  .segbar{ height:14px; border-radius:7px; overflow:hidden; display:flex; background:var(--na-soft); }
+  .seg{ height:100%; }
+  .seg.complete{ background:var(--complete); }
+  .seg.in_progress{ background:var(--progress); }
+  .seg.not_started{ background:var(--notstarted); }
+  .seg.na{ background:var(--na); }
+  .layer-pct{ font-family:'IBM Plex Mono', monospace; font-size:13px; font-weight:600; text-align:right; color:var(--complete); }
+
+  .legend{ display:flex; gap:18px; margin-top:16px; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft); }
+  .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  /* KPI strip */
+  .kpis{ display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:20px; }
+  .kpi{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); }
+  .kpi .num{ font-family:'Space Grotesk', sans-serif; font-size:26px; font-weight:700; }
+  .kpi .label{ font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+
+  /* Filters */
+  .filters{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 16px; margin-bottom:16px; box-shadow:var(--shadow);
+    position:sticky; top:12px; z-index:5;
+  }
+  .filters input[type=text], .filters select{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:8px 10px;
+    background:#FBFCFB;
+    color:var(--ink);
+  }
+  .filters input[type=text]{ flex:1; min-width:180px; }
+  .filters select{ min-width:150px; }
+  .filters button{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px; font-weight:500;
+    border:1px solid var(--line);
+    background:#FBFCFB;
+    color:var(--ink-soft);
+    border-radius:7px;
+    padding:8px 12px;
+    cursor:pointer;
+  }
+  .filters button:hover{ background:var(--na-soft); }
+  .result-count{ font-size:12px; color:var(--ink-soft); margin-left:auto; padding-left:8px; }
+
+  /* Table */
+  .table-panel{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  thead th{
+    text-align:left;
+    background:var(--brand-soft);
+    color:var(--brand);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:10px 12px;
+    cursor:pointer;
+    white-space:nowrap;
+    border-bottom:1px solid var(--line);
+  }
+  thead th:hover{ background:#D8ECE5; }
+  thead th.sorted::after{ content:" \25BE"; }
+  tbody td{ padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tbody tr:hover{ background:#FAFBFA; }
+  .col-hier{ color:var(--ink); }
+  .col-hier.dim{ color:#A8B1AA; }
+  .pill{
+    display:inline-flex; align-items:center; gap:5px;
+    padding:3px 8px; border-radius:20px; font-size:11.5px; font-weight:500;
+  }
+  .pill.complete{ background:var(--complete-soft); color:var(--complete); }
+  .pill.in_progress{ background:var(--progress-soft); color:var(--progress); }
+  .pill.not_started{ background:var(--notstarted-soft); color:var(--notstarted); }
+  .pill.na{ background:var(--na-soft); color:#8A928C; }
+  .release-cell{ font-family:'IBM Plex Mono', monospace; font-size:12px; }
+  .past-release{ color:var(--ink-soft); font-size:11px; }
+
+  .empty-state{ padding:48px 24px; text-align:center; color:var(--ink-soft); }
+  .empty-state strong{ display:block; color:var(--ink); font-family:'Space Grotesk',sans-serif; font-size:15px; margin-bottom:6px; }
+
+  .pagination{ display:flex; justify-content:space-between; align-items:center; padding:12px 16px; font-size:12.5px; color:var(--ink-soft); }
+  .pagination button{
+    border:1px solid var(--line); background:#FBFCFB; border-radius:6px; padding:6px 11px; cursor:pointer; font-size:12.5px; color:var(--ink);
+  }
+  .pagination button:disabled{ opacity:0.4; cursor:default; }
+  .pagination .pages{ display:flex; gap:8px; align-items:center; }
+
+  footer.foot{ text-align:center; font-size:11.5px; color:var(--ink-soft); padding:24px 0 0; }
+
+  @media (max-width:720px){
+    .kpis{ grid-template-columns:repeat(2,1fr); }
+    .layer-row{ grid-template-columns:60px 1fr 50px; }
+    .filters{ position:static; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Feature Delivery Status</p>
+      <h1>DW-SFTIES Release Tracker</h1>
+    </div>
+    <div class="meta-right">
+      Source: <span class="mono" id="generatedAt">—</span><br>
+      Rebuilt automatically when the tracking spreadsheet is updated
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="readiness">
+    <h2>Release Readiness</h2>
+    <p class="sub">Share of tracked items complete, in progress, not started, or not applicable — by delivery layer</p>
+    <div id="layerRows"></div>
+    <div class="legend">
+      <span class="legend-item"><span class="dot" style="background:var(--complete)"></span>Complete</span>
+      <span class="legend-item"><span class="dot" style="background:var(--progress)"></span>In Progress</span>
+      <span class="legend-item"><span class="dot" style="background:var(--notstarted)"></span>Not Started</span>
+      <span class="legend-item"><span class="dot" style="background:var(--na)"></span>N/A</span>
+    </div>
+  </section>
+
+  <section class="kpis" id="kpiStrip"></section>
+
+  <section class="filters">
+    <input type="text" id="searchInput" placeholder="Search component, module, user story…">
+    <select id="componentFilter"><option value="">All components</option></select>
+    <select id="moduleFilter"><option value="">All modules</option></select>
+    <select id="statusFilter">
+      <option value="">Any status</option>
+      <option value="complete">Complete</option>
+      <option value="in_progress">In Progress</option>
+      <option value="not_started">Not Started</option>
+      <option value="na">N/A</option>
+    </select>
+    <button id="clearFilters">Clear filters</button>
+    <span class="result-count" id="resultCount"></span>
+  </section>
+
+  <section class="table-panel">
+    <div style="overflow-x:auto;">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th data-key="Component">Component</th>
+            <th data-key="Module">Module</th>
+            <th data-key="Sub Module">Sub Module</th>
+            <th data-key="Element">Element</th>
+            <th data-key="Sub element">Sub element</th>
+            <th data-key="DB">DB</th>
+            <th data-key="API">API</th>
+            <th data-key="UI">UI</th>
+            <th data-key="Latest Release">Latest Release</th>
+            <th data-key="Past Release">Past Release</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <strong>No items match these filters</strong>
+      Try clearing a filter or broadening your search.
+    </div>
+    <div class="pagination">
+      <span id="pageInfo"></span>
+      <div class="pages">
+        <button id="prevPage">&larr; Prev</button>
+        <button id="nextPage">Next &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">DW-SFTIES release tracking · generated from the source spreadsheet · static build, no live backend</footer>
+</div>
+
+<script>
+const DATA = {"generated_at": "2026-07-08T03:55:38+00:00", "records": [{"Component": "DW-SFTIES", "Module": "Login", "Sub Module": "-", "Element": "-", "Sub element": "-", "User Story": "✓", "Latest Release": "0.13", "Past Release": "0.01,0.06", "DB": "✓", "DB_status": "complete", "API": "♦", "API_status": "in_progress", "UI": "●", "UI_status": "not_started"}, {"Component": "DW-SFTIES", "Module": "DW-SFTIES Dashboard", "Sub Module": "Basic", "Element": "Regulating Agency", "Sub element": "Population", "User Story": "♦", "Latest Release": "0.15", "Past Release": "0.03, 0.06", "DB": "♦", "DB_status": "in_progress", "API": "✓", "API_status": "complete", "UI": "●", "UI_status": "not_started"}, {"Component": "DW-SFTIES", "Module": "DW-SFTIES Dashboard", "Sub Module": "Generate UI Updates", "Element": "Basic Info", "Sub element": "-", "User Story": "✓", "Latest Release": "0.12", "Past Release": "0.09,0.08", "DB": "♦", "DB_status": "in_progress", "API": "●", "API_status": "not_started", "UI": "♦", "UI_status": "in_progress"}, {"Component": "DW-SFTIES", "Module": "Inventory", "Sub Module": "Basic", "Element": "User Management", "Sub element": "Set", "User Story": "●", "Latest Release": "0.09", "Past Release": "0.11,0.13", "DB": "✓", "DB_status": "complete", "API": "♦", "API_status": "in_progress", "UI": "♦", "UI_status": "in_progress"}, {"Component": "DW-SFTIES", "Module": "Inventory", "Sub Module": "Update Inventory", "Element": "General", "Sub element": "Delete", "User Story": "♦", "Latest Release": "0.1", "Past Release": "0.05", "DB": "●", "DB_status": "not_started", "API": "✓", "API_status": "complete", "UI": "✓", "UI_status": "complete"}], "summary": {"total": 5, "columns": {"DB": {"counts": {"complete": 2, "in_progress": 2, "not_started": 1, "na": 0, "unknown": 0}, "pct_complete": 40.0}, "API": {"counts": {"complete": 2, "in_progress": 2, "not_started": 1, "na": 0, "unknown": 0}, "pct_complete": 40.0}, "UI": {"counts": {"complete": 1, "in_progress": 2, "not_started": 2, "na": 0, "unknown": 0}, "pct_complete": 20.0}}, "components": ["DW-SFTIES"], "modules": ["DW-SFTIES Dashboard", "Inventory", "Login"], "releases": ["0.09", "0.1", "0.12", "0.13", "0.15"]}};
+
+const STATUS_LABEL = { complete: "Complete", in_progress: "In Progress", not_started: "Not Started", na: "N/A", unknown: "—" };
+const PAGE_SIZE = 50;
+
+let state = {
+  search: "",
+  component: "",
+  module: "",
+  status: "",
+  sortKey: null,
+  sortDir: 1,
+  page: 1,
+};
+
+function fmtDate(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+  }catch(e){ return iso; }
+}
+
+function renderHeader(){
+  document.getElementById('generatedAt').textContent = fmtDate(DATA.generated_at);
+}
+
+function renderReadiness(){
+  const container = document.getElementById('layerRows');
+  container.innerHTML = "";
+  ["DB","API","UI"].forEach(layer=>{
+    const c = DATA.summary.columns[layer].counts;
+    const total = DATA.summary.total || 1;
+    const row = document.createElement('div');
+    row.className = "layer-row";
+    row.innerHTML = `
+      <div class="layer-label">${layer}</div>
+      <div class="segbar">
+        <div class="seg complete" style="width:${100*c.complete/total}%"></div>
+        <div class="seg in_progress" style="width:${100*c.in_progress/total}%"></div>
+        <div class="seg not_started" style="width:${100*c.not_started/total}%"></div>
+        <div class="seg na" style="width:${100*c.na/total}%"></div>
+      </div>
+      <div class="layer-pct">${DATA.summary.columns[layer].pct_complete}%</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function renderKpis(){
+  const strip = document.getElementById('kpiStrip');
+  const total = DATA.summary.total;
+  const cards = [
+    { num: total, label: "Tracked Items" },
+    { num: DATA.summary.columns.DB.pct_complete + "%", label: "DB Complete" },
+    { num: DATA.summary.columns.API.pct_complete + "%", label: "API Complete" },
+    { num: DATA.summary.columns.UI.pct_complete + "%", label: "UI Complete" },
+  ];
+  strip.innerHTML = cards.map(c => `
+    <div class="kpi"><div class="num">${c.num}</div><div class="label">${c.label}</div></div>
+  `).join("");
+}
+
+function populateFilters(){
+  const compSel = document.getElementById('componentFilter');
+  DATA.summary.components.forEach(c=>{
+    const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+    compSel.appendChild(opt);
+  });
+  const modSel = document.getElementById('moduleFilter');
+  DATA.summary.modules.forEach(m=>{
+    const opt = document.createElement('option'); opt.value = m; opt.textContent = m;
+    modSel.appendChild(opt);
+  });
+}
+
+function getFiltered(){
+  const q = state.search.trim().toLowerCase();
+  return DATA.records.filter(r=>{
+    if(state.component && r.Component !== state.component) return false;
+    if(state.module && r.Module !== state.module) return false;
+    if(state.status && !["DB","API","UI"].some(l => r[`${l}_status`] === state.status)) return false;
+    if(q){
+      const hay = [r.Component, r.Module, r["Sub Module"], r.Element, r["Sub element"], r["Latest Release"], r["Past Release"]]
+        .join(" ").toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function sortRows(rows){
+  if(!state.sortKey) return rows;
+  const key = state.sortKey;
+  return [...rows].sort((a,b)=>{
+    const av = (a[key] ?? "").toString();
+    const bv = (b[key] ?? "").toString();
+    return av.localeCompare(bv, undefined, {numeric:true}) * state.sortDir;
+  });
+}
+
+function pill(status, symbol){
+  return `<span class="pill ${status}" title="${STATUS_LABEL[status]}">${symbol || ''} ${STATUS_LABEL[status]}</span>`;
+}
+
+function renderTable(){
+  let rows = getFiltered();
+  document.getElementById('resultCount').textContent = `${rows.length} of ${DATA.records.length} items`;
+  rows = sortRows(rows);
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  if(state.page > totalPages) state.page = totalPages;
+  const startIdx = (state.page - 1) * PAGE_SIZE;
+  const pageRows = rows.slice(startIdx, startIdx + PAGE_SIZE);
+
+  const tbody = document.getElementById('tableBody');
+  const emptyState = document.getElementById('emptyState');
+
+  if(pageRows.length === 0){
+    tbody.innerHTML = "";
+    emptyState.style.display = "block";
+  } else {
+    emptyState.style.display = "none";
+    tbody.innerHTML = pageRows.map(r => `
+      <tr>
+        <td class="col-hier">${r.Component}</td>
+        <td class="col-hier">${r.Module}</td>
+        <td class="col-hier ${r["Sub Module"]==='-'?'dim':''}">${r["Sub Module"]}</td>
+        <td class="col-hier ${r.Element==='-'?'dim':''}">${r.Element}</td>
+        <td class="col-hier ${r["Sub element"]==='-'?'dim':''}">${r["Sub element"]}</td>
+        <td>${pill(r.DB_status, r.DB)}</td>
+        <td>${pill(r.API_status, r.API)}</td>
+        <td>${pill(r.UI_status, r.UI)}</td>
+        <td class="release-cell">${r["Latest Release"] || "—"}</td>
+        <td class="past-release">${r["Past Release"] || "—"}</td>
+      </tr>
+    `).join("");
+  }
+
+  document.getElementById('pageInfo').textContent = rows.length
+    ? `Page ${state.page} of ${totalPages}`
+    : "";
+  document.getElementById('prevPage').disabled = state.page <= 1;
+  document.getElementById('nextPage').disabled = state.page >= totalPages;
+}
+
+function attachEvents(){
+  document.getElementById('searchInput').addEventListener('input', e=>{
+    state.search = e.target.value; state.page = 1; renderTable();
+  });
+  document.getElementById('componentFilter').addEventListener('change', e=>{
+    state.component = e.target.value; state.page = 1; renderTable();
+  });
+  document.getElementById('moduleFilter').addEventListener('change', e=>{
+    state.module = e.target.value; state.page = 1; renderTable();
+  });
+  document.getElementById('statusFilter').addEventListener('change', e=>{
+    state.status = e.target.value; state.page = 1; renderTable();
+  });
+  document.getElementById('clearFilters').addEventListener('click', ()=>{
+    state = { ...state, search:"", component:"", module:"", status:"", page:1 };
+    document.getElementById('searchInput').value = "";
+    document.getElementById('componentFilter').value = "";
+    document.getElementById('moduleFilter').value = "";
+    document.getElementById('statusFilter').value = "";
+    renderTable();
+  });
+  document.getElementById('prevPage').addEventListener('click', ()=>{
+    if(state.page > 1){ state.page--; renderTable(); }
+  });
+  document.getElementById('nextPage').addEventListener('click', ()=>{
+    state.page++; renderTable();
+  });
+  document.querySelectorAll('#dataTable thead th').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const key = th.dataset.key;
+      if(state.sortKey === key){ state.sortDir *= -1; } else { state.sortKey = key; state.sortDir = 1; }
+      document.querySelectorAll('#dataTable thead th').forEach(h=>h.classList.remove('sorted'));
+      th.classList.add('sorted');
+      renderTable();
+    });
+  });
+}
+
+renderHeader();
+renderReadiness();
+renderKpis();
+populateFilters();
+attachEvents();
+renderTable();
+</script>
+</body>
+</html>
