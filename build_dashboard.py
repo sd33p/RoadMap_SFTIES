@@ -43,7 +43,6 @@ COLUMN_MAP = {
     "dms": "DMS",
     "latest release": "Latest Release",
     "past releases": "Past Releases",  
-    # "past release": "Past Release",
 }
 
 STATUS_SYMBOLS = {
