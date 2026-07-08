@@ -73,7 +73,7 @@ def load_data(path: Path) -> pd.DataFrame:
             f"Found columns: {list(df.columns)}"
         )
 
-    for col in HIERARCHY_COLUMNS + STATUS_COLUMNS + ["Latest Release", "Past Release"]:
+    for col in HIERARCHY_COLUMNS + STATUS_COLUMNS + ["Latest Release", "Past Releases"]:
         df[col] = df[col].fillna("").astype(str).str.strip()
 
     return df
