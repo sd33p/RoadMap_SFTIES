@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "data/dashboard_data.xlsx"
+      - "data/ForUpload_ProductRoadmapData.xlsx"
       - "build_dashboard.py"
       - "template.html"
   workflow_dispatch: {}   # lets you trigger a rebuild manually from the Actions tab

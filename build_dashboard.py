@@ -24,25 +24,26 @@ import pandas as pd
 # Config
 # ---------------------------------------------------------------------------
 
-SOURCE_XLSX = Path("data/dashboard_data.xlsx")
+SOURCE_XLSX = Path("data/ForUpload_ProductRoadmapData.xlsx")
 OUTPUT_HTML = Path("docs/index.html")
 TEMPLATE_HTML = Path("template.html")
 
 # Canonical column names we expect in the sheet (order matters for display).
 # Keys are normalized (lowercased, stripped) source header -> our clean name.
 COLUMN_MAP = {
-    "component": "Component",
-    "module": "Module",
-    "sub module": "Sub Module",
-    "element": "Element",
-    "sub element": "Sub element",
-    "user story": "User Story",
-    "db": "DB",
-    "api": "API",
-    "ui": "UI",
-    "latest release": "Latest Release",
-    "past relase": "Past Release",   # source file has this typo
-    "past release": "Past Release",
+    "Component": "Component",
+    "Module": "Module",
+    "Submodule": "Sub Module",
+    "Element": "Element",
+    "Sub-Element": "Sub element",
+    "User Story": "User Story",
+    "DB": "DB",
+    "API": "API",
+    "UI": "UI",
+    "DMS": "DMS",
+    "Latest Release": "Latest Release",
+    "Past Releases": "Past Releases",  
+    # "past release": "Past Release",
 }
 
 STATUS_SYMBOLS = {
